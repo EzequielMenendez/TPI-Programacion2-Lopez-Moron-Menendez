@@ -28,3 +28,14 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/target/
+
+### Local config ###
+*.iml
+.idea/
+lib/
+
+### Maven ###
+target/
+*.class
+*.jar
