@@ -35,5 +35,6 @@ public class Main {
                 System.out.println("Error: ingrese un numero valido.");
             }
         }
+        scanner.close();
     }
 }

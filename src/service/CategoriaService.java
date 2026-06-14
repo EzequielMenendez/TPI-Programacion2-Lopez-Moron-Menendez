@@ -1,60 +1,87 @@
 package service;
 
+import dao.CRUDCategoria;
 import entities.Categoria;
 import exceptions.EntidadNoEncontradaException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaService {
-    private List<Categoria> categorias = new ArrayList<>();
-    private Long contadorId = 1L;
+    CRUDCategoria gestor = new CRUDCategoria();
 
     public void crear(String nombre, String descripcion) {
-        for (Categoria c : categorias) {
-            if (!c.isEliminado() && c.getNombre().equalsIgnoreCase(nombre)) {
-                System.out.println("Error: ya existe una categoria con ese nombre.");
+        try {
+            Categoria existente = gestor.buscarPorNombre(nombre);
+
+            if (existente != null) {
+                System.out.println("Error: ya existe una categoría activa con el nombre '" + nombre + "'.");
                 return;
             }
+
+            int nuevoId = gestor.crearCategoria(nombre, descripcion);
+            System.out.println("Categoría creada exitosamente en la base de datos con ID: " + nuevoId);
+
+        } catch (SQLException e) {
+            System.out.println("Error en la base de datos: " + e.getMessage());
         }
-        Categoria nueva = new Categoria(nombre, descripcion);
-        nueva.setId(contadorId++);
-        categorias.add(nueva);
-        System.out.println("Categoria creada con ID: " + nueva.getId());
     }
 
     public List<Categoria> listar() {
-        List<Categoria> activas = new ArrayList<>();
-        for (Categoria c : categorias) {
-            if (!c.isEliminado()) {
-                activas.add(c);
-            }
+        try {
+            return gestor.listarCategorias();
+
+        } catch (SQLException e) {
+            System.out.println("Error al intentar obtener las categorías: " + e.getMessage());
+
+            return new ArrayList<>();
         }
-        return activas;
     }
 
     public Categoria buscarPorId(Long id) {
-        for (Categoria c : categorias) {
-            if (c.getId().equals(id) && !c.isEliminado()) {
+        try {
+            Categoria c = gestor.buscarPorId(id);
+            if (c != null) {
                 return c;
             }
+        } catch (SQLException e) {
+            System.out.println("Error en la base de datos al buscar la categoría: " + e.getMessage());
         }
-        throw new EntidadNoEncontradaException("Categoria con ID " + id + " no encontrada.");
+        throw new EntidadNoEncontradaException("Categoría con ID " + id + " no encontrada o eliminada.");
     }
 
     public void editar(Long id, String nuevoNombre, String nuevaDescripcion) {
-        Categoria c = buscarPorId(id);
-        if (nuevoNombre != null && !nuevoNombre.isBlank()) {
-            c.setNombre(nuevoNombre);
+        try {
+            Categoria c = buscarPorId(id);
+
+            if (nuevoNombre != null && !nuevoNombre.isBlank()) {
+                c.setNombre(nuevoNombre);
+            }
+            if (nuevaDescripcion != null && !nuevaDescripcion.isBlank()) {
+                c.setDescripcion(nuevaDescripcion);
+            }
+
+            gestor.actualizarCategoria(c);
+            System.out.println("Categoría actualizada correctamente en la base de datos.");
+
+        } catch (EntidadNoEncontradaException e) {
+            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar en la base de datos: " + e.getMessage());
         }
-        if (nuevaDescripcion != null && !nuevaDescripcion.isBlank()) {
-            c.setDescripcion(nuevaDescripcion);
-        }
-        System.out.println("Categoria actualizada correctamente.");
     }
 
     public void eliminar(Long id) {
-        Categoria c = buscarPorId(id);
-        c.setEliminado(true);
-        System.out.println("Categoria eliminada correctamente.");
+        try {
+            buscarPorId(id);
+
+            gestor.eliminarCategoria(id);
+            System.out.println("Categoría eliminada correctamente del sistema.");
+
+        } catch (EntidadNoEncontradaException e) {
+            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error al intentar eliminar la categoría: " + e.getMessage());
+        }
     }
 }
