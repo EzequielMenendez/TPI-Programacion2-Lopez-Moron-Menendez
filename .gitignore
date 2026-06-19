@@ -39,3 +39,6 @@ lib/
 target/
 *.class
 *.jar
+
+### Local documentation ###
+/docs/Documentacion_Academica_Tecnica_Food_Store.html
