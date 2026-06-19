@@ -1,166 +1,127 @@
-# Food Store - Sistema de Gestion de Pedidos
+# Food Store — Sistema de Gestión de Pedidos
 
-Trabajo Practico Integrador de Programacion 2.
+Trabajo Práctico Integrador de **Programación II**. Aplicación de consola desarrollada en Java para administrar categorías, productos, usuarios y pedidos de un local gastronómico.
 
-Aplicacion de consola desarrollada en Java para gestionar categorias, productos, usuarios y pedidos de un local de comidas.
+## Tecnologías
 
-## Tecnologias
-
-- Java 17
-- Maven
+- Java 21
+- Apache Maven
 - MySQL
-- JDBC
-- Patron DAO
+- JDBC con MySQL Connector/J
+- Programación Orientada a Objetos
+- Arquitectura por capas y patrón DAO
 
-## Estructura del proyecto
+## Requisitos
 
-```text
-src/
-  Main.java
-  MenuCategoria.java
-  MenuProducto.java
-  MenuUsuario.java
-  MenuPedido.java
-  config/
-    DatabaseConnection.java
-    TestConnection.java
-  dao/
-    CRUDCategoria.java
-    CRUDProducto.java
-    CRUDUsuario.java
-    CRUDPedido.java
-  entities/
-    Base.java
-    Categoria.java
-    Producto.java
-    Usuario.java
-    Pedido.java
-    DetallePedido.java
-    Calculable.java
-  enums/
-    Estado.java
-    FormaPago.java
-    Rol.java
-  exceptions/
-    EntidadNoEncontradaException.java
-    MailDuplicadoException.java
-    StockInvalidoException.java
-  service/
-    CategoriaService.java
-    ProductoService.java
-    UsuarioService.java
-    PedidoService.java
-schema.sql
-pom.xml
-```
-
-## Modelo principal
-
-- `Base`: clase abstracta con `id`, `eliminado`, `createdAt`, `equals()` y `hashCode()`.
-- `Categoria`: representa una categoria de productos.
-- `Producto`: representa un producto asociado a una categoria.
-- `Usuario`: representa un usuario del sistema.
-- `Pedido`: representa una compra, implementa `Calculable` y contiene detalles.
-- `DetallePedido`: representa cada producto incluido en un pedido.
-
-## Funcionalidades
-
-Desde el menu principal se puede acceder a:
-
-1. Categorias
-2. Productos
-3. Usuarios
-4. Pedidos
-
-Cada modulo tiene opciones para listar, crear, editar y eliminar logicamente registros.
+- JDK 21 o superior
+- Maven 3.9 o superior
+- Acceso a la base de datos MySQL configurada
 
 ## Base de datos
 
-El archivo `schema.sql` crea la base `pedidos_db` y las tablas:
+La aplicación utiliza una base de datos MySQL ya creada y configurada para el proyecto. No requiere instalar ni preparar una base local para su ejecución en el entorno del equipo.
 
-- `categoria`
-- `producto`
-- `usuario`
-- `pedido`
-- `detalle_pedido`
-
-Tambien incluye datos iniciales de prueba.
-
-Para preparar la base:
-
-```sql
-SOURCE schema.sql;
-```
-
-O ejecutar el contenido del archivo desde MySQL Workbench, DBeaver o la consola de MySQL.
-
-## Configuracion de conexion
-
-La conexion esta centralizada en:
-
-```text
-src/config/DatabaseConnection.java
-```
-
-Valores actuales:
+La conexión se encuentra centralizada en `src/config/DatabaseConnection.java`:
 
 ```java
 private static final String URL = "jdbc:mysql://localhost:3306/pedidos_db";
-private static final String USER = "root";
-private static final String PASSWORD = "";
+private static final String USER = "TU_USUARIO";
+private static final String PASSWORD = "TU_CONTRASENA";
 ```
 
-Modificar esos datos si MySQL usa otro usuario, password o puerto.
+El archivo [`schema.sql`](schema.sql) se conserva como referencia de la estructura relacional y para reproducir la base en otro entorno si fuera necesario.
 
-## Ejecucion
+## Compilación y ejecución
 
-Compilar con Maven:
+Compilar y descargar dependencias:
 
 ```bash
 mvn clean package
+mvn dependency:copy-dependencies -DoutputDirectory=target/dependency
 ```
 
-Ejecutar desde el IDE usando la clase:
+Ejecutar en Windows:
 
-```text
-Main
+```powershell
+java -cp "target/classes;target/dependency/*" Main
 ```
 
-Tambien se puede probar la conexion ejecutando:
+Ejecutar en Linux/macOS:
 
-```text
-config.TestConnection
+```bash
+java -cp "target/classes:target/dependency/*" Main
 ```
 
-## Reglas de negocio implementadas
+También se puede ejecutar la clase `Main` directamente desde IntelliJ IDEA. Para comprobar solamente la conexión, ejecutar `config.TestConnection`.
 
-- No se permite crear productos con precio negativo.
-- No se permite crear productos con stock negativo.
-- No se permite crear detalles de pedido con cantidad menor o igual a cero.
-- No se permite crear usuarios con mail vacio.
-- El mail de usuario se valida como unico.
-- Las eliminaciones se manejan como baja logica usando `eliminado = true`.
+## Funcionalidades
+
+- Gestión CRUD de categorías.
+- Gestión CRUD de productos asociados a categorías.
+- Gestión CRUD de usuarios con control de correo duplicado.
+- Creación, consulta, actualización y baja lógica de pedidos.
+- Registro de detalles de pedido y cálculo del total en memoria.
+- Validación de precios, stock, cantidades e identificadores.
+- Persistencia mediante consultas parametrizadas con `PreparedStatement`.
+
+Las eliminaciones son lógicas: los registros se conservan con `eliminado = true` y dejan de aparecer en los listados.
 
 ## Arquitectura
 
-- `Menu`: entrada y salida por consola.
-- `Service`: validaciones y coordinacion de casos de uso.
-- `DAO`: acceso a datos con JDBC y SQL.
-- `Entities`: modelo de dominio orientado a objetos.
-- `Exceptions`: errores propios del dominio.
+```text
+Main y Menús
+    ↓
+Servicios
+    ↓
+DAO / JDBC
+    ↓
+MySQL
+```
 
-## Estado actual
+```text
+src/
+├── Main.java
+├── MenuCategoria.java
+├── MenuProducto.java
+├── MenuUsuario.java
+├── MenuPedido.java
+├── config/       # Conexión y prueba de conexión
+├── dao/          # Consultas SQL y mapeo relacional
+├── entities/     # Modelo de dominio
+├── enums/        # Estado, FormaPago y Rol
+├── exceptions/   # Excepciones del dominio
+└── service/      # Casos de uso y validaciones
+```
 
-- El menu principal y los submenus estan implementados.
-- Las entidades principales estan modeladas.
-- `Categoria` ya trabaja con JDBC mediante DAO.
-- `Producto`, `Usuario` y `Pedido` tienen servicios funcionales en memoria, pero sus DAO todavia deben completarse para persistencia real.
-- Falta implementar transacciones JDBC para crear pedidos con detalles.
+## Modelo de datos
 
-## Pendiente antes de entregar
+- `categoria`: clasificación de productos.
+- `producto`: catálogo, precio, stock y categoría.
+- `usuario`: datos personales, credenciales y rol.
+- `pedido`: fecha, estado, medio de pago, total y usuario.
+- `detalle_pedido`: productos y cantidades de cada pedido.
 
-- Completar DAO/JDBC de producto, usuario, pedido y detalle.
-- Persistir pedidos y detalles con una misma transaccion.
-- Completar el informe PDF academico.
-- Agregar UML actualizado.
-- Agregar link publico al video demostrativo.
+## Reglas de negocio implementadas
+
+- El precio y el stock no pueden ser negativos.
+- La cantidad de un detalle debe ser mayor que cero.
+- No se puede solicitar más cantidad que el stock disponible.
+- El correo del usuario es obligatorio y único entre usuarios activos.
+- Las búsquedas y actualizaciones ignoran registros eliminados.
+- El total del pedido se calcula a partir de sus detalles.
+
+## Estado y limitaciones conocidas
+
+El proyecto compila correctamente con Maven y los DAO de las cuatro áreas utilizan JDBC. Antes de considerar completa la persistencia de pedidos se recomienda:
+
+- Ejecutar pedido, detalles, actualización del total y descuento de stock dentro de una única transacción.
+- Actualizar en la base el total calculado al agregar detalles.
+- Corregir la reconstrucción del subtotal al cargar detalles de un pedido.
+- Incorporar pruebas automatizadas.
+- Mover las credenciales de conexión a variables de entorno o configuración externa.
+
+## Documentación
+
+- [Documentación académica y técnica](DOCUMENTACION.md)
+- [Informe final en PDF](docs/Entrega_Final_Food_Store_UTN.pdf)
+- [Repositorio GitHub](https://github.com/EzequielMenendez/TPI-Programacion2-Lopez-Moron-Menendez)

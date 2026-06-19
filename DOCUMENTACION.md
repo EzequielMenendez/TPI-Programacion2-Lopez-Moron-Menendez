@@ -1,189 +1,271 @@
-# Documentacion Academica y Tecnica
+# Documentación Académica y Técnica
 
-## Caratula
+## Food Store — Sistema de Gestión de Pedidos
 
-**Institucion:** Tecnicatura Universitaria en Programacion a Distancia  
-**Materia:** Programacion 2  
-**Proyecto:** Food Store - Sistema de Gestion de Pedidos  
-**Integrantes:** Lopez, Moron y Menendez  
-**Fecha:** Junio 2026
+**Institución:** Universidad Tecnológica Nacional (UTN) — Facultad Regional Mendoza<br>
+**Carrera:** Tecnicatura Universitaria en Programación<br>
+**Materia:** Programación II<br>
+**Integrantes:** Federico López, Nicolás Morón y Ezequiel Menéndez<br>
+**Fecha de entrega:** 18 de junio de 2026<br>
+**Repositorio:** https://github.com/EzequielMenendez/TPI-Programacion2-Lopez-Moron-Menendez
 
-## Indice
+## Índice
 
-1. Introduccion
-2. Marco teorico
-3. Arquitectura del sistema
-4. Modelo de dominio
-5. Base de datos
-6. Funcionamiento del sistema
-7. Validaciones y manejo de errores
-8. Decisiones tecnicas
-9. Dificultades y soluciones
-10. Pruebas realizadas
-11. Pendientes antes de la entrega
-12. Bibliografia y enlaces
+1. Resumen y objetivos
+2. Alcance funcional
+3. Marco teórico
+4. Arquitectura y organización
+5. Modelo de dominio
+6. Persistencia y base de datos
+7. Flujo de ejecución
+8. Validaciones y manejo de errores
+9. Decisiones técnicas
+10. Dificultades y soluciones
+11. Pruebas y verificación
+12. Limitaciones y mejoras
+13. Instalación y ejecución
+14. Conclusión
+15. Bibliografía y enlaces
 
-## 1. Introduccion
+## 1. Resumen y objetivos
 
-Food Store es una aplicacion de consola desarrollada en Java para gestionar pedidos de comida. El sistema permite administrar categorias, productos, usuarios y pedidos mediante menus interactivos.
+Food Store es una aplicación de consola desarrollada en Java para gestionar la operación básica de un local gastronómico. Permite administrar categorías, productos, usuarios y pedidos persistidos en una base de datos MySQL.
 
-El objetivo principal del proyecto es aplicar Programacion Orientada a Objetos, separacion por capas, persistencia con JDBC y uso de una base de datos relacional MySQL.
+El objetivo académico es integrar Programación Orientada a Objetos, colecciones, interfaces, herencia, enumeraciones, excepciones, arquitectura por capas, acceso a datos con JDBC y modelado relacional.
 
-## 2. Marco teorico
+## 2. Alcance funcional
 
-### Java
+El menú principal permite acceder a cuatro módulos:
 
-Java es un lenguaje orientado a objetos, tipado y multiplataforma. En este proyecto se utiliza para modelar entidades del dominio, servicios, acceso a datos y menus de consola.
+- **Categorías:** listar, crear, editar y eliminar lógicamente.
+- **Productos:** listar, crear, editar y eliminar, manteniendo la relación con una categoría.
+- **Usuarios:** listar, crear, editar y eliminar, con validación de correo único.
+- **Pedidos:** listar, crear, agregar productos, actualizar estado y forma de pago, y eliminar lógicamente.
 
-### Programacion Orientada a Objetos
+El sistema es monousuario y se ejecuta por consola. No incluye interfaz gráfica, API web ni autenticación.
 
-El proyecto aplica encapsulamiento, herencia, constructores, enums, interfaces y sobrescritura de metodos. Las entidades heredan de una clase abstracta `Base`, que contiene atributos comunes como `id`, `eliminado` y `createdAt`.
+## 3. Marco teórico
+
+### Programación Orientada a Objetos
+
+Las entidades encapsulan estado y comportamiento. `Base` centraliza los atributos comunes; `Pedido` implementa la interfaz `Calculable`; los enums limitan los valores posibles de estado, forma de pago y rol.
 
 ### JDBC
 
-JDBC permite conectar Java con una base de datos relacional. Se utiliza para ejecutar sentencias SQL mediante `PreparedStatement`, leer resultados con `ResultSet` y separar el acceso a datos dentro de clases DAO.
+JDBC es la API estándar de Java para comunicarse con bases de datos relacionales. El proyecto utiliza `DriverManager`, `Connection`, `PreparedStatement` y `ResultSet`. Las consultas parametrizadas reducen errores de formato y riesgos de inyección SQL.
 
-### MySQL
+### Base de datos relacional
 
-MySQL es el motor de base de datos utilizado para almacenar categorias, productos, usuarios, pedidos y detalles de pedidos.
+MySQL almacena los datos en tablas vinculadas mediante claves foráneas. La estructura preserva la relación entre productos y categorías, pedidos y usuarios, y detalles con pedidos y productos.
 
-### Patron DAO
+### Maven
 
-El patron DAO separa la logica de persistencia del resto de la aplicacion. Las clases DAO contienen las consultas SQL y evitan que el menu o los servicios dependan directamente de la base de datos.
+Maven define la versión de Java, resuelve MySQL Connector/J y ejecuta el ciclo de compilación y empaquetado a partir de `pom.xml`.
 
-## 3. Arquitectura del sistema
+### Patrón DAO y arquitectura por capas
 
-El proyecto esta organizado en capas:
+El patrón DAO concentra el SQL y el mapeo de registros. Los servicios aplican reglas de negocio y los menús se ocupan de la interacción por consola. Esta separación reduce el acoplamiento y facilita el mantenimiento.
 
-- `Menu`: gestiona la interaccion con el usuario por consola.
-- `Service`: contiene validaciones y reglas de negocio.
-- `DAO`: contiene la persistencia con JDBC y SQL.
-- `Entities`: contiene el modelo de dominio.
-- `Enums`: define valores fijos del sistema.
-- `Exceptions`: contiene excepciones propias del dominio.
-- `Config`: centraliza la conexion a la base de datos.
+## 4. Arquitectura y organización
 
-Esta separacion permite que el codigo sea mas mantenible, testeable y facil de corregir.
-
-## 4. Modelo de dominio
-
-### Base
-
-Clase abstracta heredada por todas las entidades principales. Define:
-
-- `id`
-- `eliminado`
-- `createdAt`
-- `equals()`
-- `hashCode()`
-
-### Categoria
-
-Representa una categoria de productos. Contiene nombre y descripcion.
-
-### Producto
-
-Representa un producto del catalogo. Contiene nombre, precio, descripcion, stock, imagen, disponibilidad y una categoria asociada.
-
-### Usuario
-
-Representa un usuario del sistema. Contiene nombre, apellido, mail, celular, contrasenia y rol.
-
-### Pedido
-
-Representa una compra realizada por un usuario. Contiene fecha, estado, total, forma de pago, usuario asociado y una lista de detalles. Implementa la interfaz `Calculable`.
-
-### DetallePedido
-
-Representa cada item incluido en un pedido. Contiene cantidad, subtotal y producto asociado.
-
-## 5. Base de datos
-
-El archivo `schema.sql` crea la base `pedidos_db` y las siguientes tablas:
-
-- `categoria`
-- `producto`
-- `usuario`
-- `pedido`
-- `detalle_pedido`
-
-Todas las tablas principales incluyen el campo `eliminado`, usado para baja logica. Esto permite ocultar registros sin borrarlos fisicamente, conservando historial.
-
-## 6. Funcionamiento del sistema
-
-Al iniciar, el sistema muestra el menu principal:
+El flujo general es:
 
 ```text
-=== SISTEMA DE PEDIDOS (FOOD STORE) ===
-1. Categorias
-2. Productos
-3. Usuarios
-4. Pedidos
-0. Salir
+Usuario
+  ↓
+Main y clases Menu*
+  ↓
+Clases *Service
+  ↓
+Clases CRUD* (DAO)
+  ↓
+DatabaseConnection / JDBC
+  ↓
+MySQL
 ```
 
-Cada opcion abre un submenu con operaciones de listado, creacion, edicion y eliminacion logica.
+Responsabilidades:
 
-## 7. Validaciones y manejo de errores
+| Capa | Responsabilidad | Clases principales |
+|---|---|---|
+| Presentación | Menús, lectura y mensajes | `Main`, `MenuCategoria`, `MenuProducto`, `MenuUsuario`, `MenuPedido` |
+| Servicio | Validaciones y casos de uso | `CategoriaService`, `ProductoService`, `UsuarioService`, `PedidoService` |
+| Persistencia | SQL, consultas y mapeo | `CRUDCategoria`, `CRUDProducto`, `CRUDUsuario`, `CRUDPedido` |
+| Dominio | Entidades y comportamiento | `Categoria`, `Producto`, `Usuario`, `Pedido`, `DetallePedido` |
+| Configuración | Apertura de conexiones | `DatabaseConnection`, `TestConnection` |
 
-El sistema contempla validaciones basicas:
+## 5. Modelo de dominio
 
-- No permitir precios negativos.
-- No permitir stock negativo.
-- No permitir cantidades menores o iguales a cero en detalles de pedido.
-- No permitir usuarios con mail vacio.
-- Validar mail duplicado.
-- Informar cuando un ID no existe.
-- Capturar errores de formato numerico en el menu.
+- **Base:** clase abstracta con `id`, `eliminado`, `createdAt`, `equals()` y `hashCode()`.
+- **Categoria:** nombre y descripción.
+- **Producto:** nombre, precio, descripción, stock, imagen, disponibilidad y categoría.
+- **Usuario:** nombre, apellido, correo, celular, contraseña y rol.
+- **Pedido:** fecha, estado, total, forma de pago, usuario y lista de detalles.
+- **DetallePedido:** cantidad, subtotal y producto.
+- **Calculable:** contrato utilizado por `Pedido` para recalcular el total.
 
-Las excepciones propias ayudan a expresar errores del dominio de forma clara:
+Relaciones principales:
+
+```text
+Categoria 1 ─── N Producto
+Usuario   1 ─── N Pedido
+Pedido    1 ─── N DetallePedido
+Producto  1 ─── N DetallePedido
+```
+
+## 6. Persistencia y base de datos
+
+La aplicación utiliza una base de datos MySQL ya creada y configurada para el proyecto. No se requiere preparar una base local en el entorno habitual del equipo. El archivo `schema.sql` documenta la estructura relacional y permite reproducirla en otro entorno si fuera necesario.
+
+| Tabla | Propósito | Relaciones |
+|---|---|---|
+| `categoria` | Clasificar productos | Referenciada por `producto` |
+| `producto` | Mantener catálogo y stock | FK a `categoria` |
+| `usuario` | Registrar clientes y administradores | Referenciada por `pedido` |
+| `pedido` | Cabecera de la compra | FK a `usuario` |
+| `detalle_pedido` | Ítems y cantidades | FK a `pedido` y `producto` |
+
+Todas las tablas incluyen `id`, `eliminado` y `created_at`. La baja lógica conserva el historial y evita borrar físicamente registros relacionados.
+
+Los DAO abren conexiones con `try-with-resources`, utilizan `PreparedStatement`, recuperan claves generadas y reconstruyen objetos a partir de `ResultSet`.
+
+## 7. Flujo de ejecución
+
+1. `Main` crea un único `Scanner` y los servicios.
+2. El usuario selecciona un módulo.
+3. El menú solicita y convierte los datos ingresados.
+4. El servicio valida las reglas de negocio.
+5. El DAO ejecuta la operación SQL correspondiente.
+6. El resultado o error se informa por consola.
+
+Ejemplo de creación de producto:
+
+```text
+MenuProducto
+  → busca la categoría seleccionada
+  → ProductoService valida nombre, precio y stock
+  → CRUDProducto ejecuta INSERT
+  → MySQL genera el ID
+  → el sistema informa el resultado
+```
+
+Al crear un pedido se persiste primero la cabecera y luego cada detalle seleccionado. El objeto `Pedido` recalcula su total en memoria al agregar productos.
+
+## 8. Validaciones y manejo de errores
+
+Validaciones implementadas:
+
+- Precio y stock no negativos.
+- Cantidad de detalle mayor que cero.
+- Cantidad solicitada no superior al stock.
+- Correo obligatorio y no duplicado.
+- Existencia de entidades antes de editar o eliminar.
+- Conversión controlada de datos numéricos ingresados por consola.
+- Confirmación antes de eliminar.
+
+Excepciones de dominio:
 
 - `EntidadNoEncontradaException`
 - `MailDuplicadoException`
 - `StockInvalidoException`
 
-## 8. Decisiones tecnicas
+Los errores SQL se capturan en la capa de servicio y se muestran con un mensaje contextual. Los recursos JDBC se cierran automáticamente.
 
-- Se eligio una aplicacion de consola porque la consigna no requiere frontend ni API REST.
-- Se uso una clase `Base` para evitar duplicar atributos comunes.
-- Se separaron menus, servicios, entidades y DAO para respetar responsabilidades.
-- Se uso baja logica para no romper relaciones historicas entre productos, usuarios y pedidos.
-- Se centralizo la conexion en `DatabaseConnection`.
+## 9. Decisiones técnicas
 
-## 9. Dificultades y soluciones
+- **Aplicación de consola:** suficiente para la consigna y permite concentrar el trabajo en POO y persistencia.
+- **Capas separadas:** evita mezclar interacción, reglas y SQL.
+- **Clase `Base`:** elimina duplicación de identificador, fecha y baja lógica.
+- **Enums:** impiden estados, roles y medios de pago inválidos.
+- **DAO específico por agregado:** mantiene consultas agrupadas por responsabilidad.
+- **Baja lógica:** conserva referencias históricas.
+- **Consultas preparadas:** separan SQL de parámetros.
+- **MySQL y JDBC:** proporcionan persistencia relacional sin incorporar un ORM innecesario.
 
-Una dificultad principal fue separar correctamente responsabilidades entre capas. Para resolverlo, se definio que el menu solo interactua con el usuario, el servicio valida reglas de negocio y el DAO concentra las consultas SQL.
+## 10. Dificultades y soluciones
 
-Otra dificultad fue mantener consistencia entre el modelo orientado a objetos y la base de datos. Para esto se creo `schema.sql` con claves primarias, claves foraneas y datos iniciales.
+### Correspondencia entre objetos y tablas
 
-## 10. Pruebas realizadas
+Los resultados de consultas con relaciones deben reconstruir objetos asociados. Se resolvió mediante `JOIN` y mapeo explícito en los DAO.
 
-Pruebas basicas sugeridas:
+### Identificadores generados
 
-1. Ejecutar `schema.sql`.
-2. Ejecutar `config.TestConnection`.
-3. Iniciar `Main`.
-4. Listar categorias iniciales.
-5. Crear una categoria nueva.
-6. Editar la categoria creada.
-7. Eliminar logicamente la categoria.
-8. Verificar que no aparezca en el listado.
-9. Crear usuarios, productos y pedidos desde sus menus.
-10. Verificar mensajes de error con IDs inexistentes y valores numericos invalidos.
+Las entidades necesitan el ID asignado por MySQL. Los `INSERT` usan `Statement.RETURN_GENERATED_KEYS`.
 
-## 11. Pendientes antes de la entrega
+### Registros eliminados
 
-- Completar persistencia JDBC para producto, usuario, pedido y detalle.
-- Implementar transacciones al crear pedidos con detalles.
-- Agregar UML actualizado.
-- Agregar capturas del sistema funcionando.
-- Agregar enlace publico al video demostrativo.
-- Exportar este documento a PDF.
+Para conservar historial se adoptó baja lógica. Los listados y búsquedas filtran `eliminado = FALSE`.
 
-## 12. Bibliografia y enlaces
+### Consistencia de pedidos
 
-- Documentacion oficial de Java: https://docs.oracle.com/en/java/
-- Documentacion JDBC: https://docs.oracle.com/javase/tutorial/jdbc/
-- Documentacion MySQL: https://dev.mysql.com/doc/
-- Repositorio del proyecto: agregar enlace publico.
-- Video demostrativo: agregar enlace publico.
+Un pedido involucra cabecera, detalles, total y stock. El código ya separa estas operaciones, pero todavía requiere una transacción única para garantizar atomicidad ante errores.
+
+### Separación de responsabilidades
+
+Los menús delegan validaciones a servicios y SQL a DAO, evitando que una misma clase concentre todo el comportamiento.
+
+## 11. Pruebas y verificación
+
+Verificaciones realizadas el 18 de junio de 2026:
+
+- `mvn clean package`: **BUILD SUCCESS**.
+- Compilación de 28 archivos fuente con destino Java 21.
+- Generación de `target/mi-proyecto-1.0-SNAPSHOT.jar`.
+- Ejecución de `config.TestConnection`: conexión MySQL establecida.
+- Ejecución de `Main`: menú principal y submenús operativos.
+
+La conexión JDBC con la base configurada fue verificada correctamente. Actualmente no existen pruebas automatizadas en `src/test`.
+
+## 12. Limitaciones y mejoras
+
+Limitaciones verificadas en el código actual:
+
+1. La creación del pedido y sus detalles no utiliza una transacción común.
+2. El total calculado al agregar detalles no se actualiza en la tabla `pedido`.
+3. Al reconstruir detalles, el subtotal guardado se pasa como si fuera precio unitario y puede recalcular un total incorrecto.
+4. El stock se valida, pero no se descuenta al confirmar el detalle.
+5. Las credenciales están definidas dentro del código fuente.
+6. `DatabaseConnection` devuelve `null` ante un fallo, lo que puede producir errores secundarios.
+7. No hay pruebas unitarias ni de integración automatizadas.
+
+Mejoras prioritarias:
+
+- Incorporar transacciones JDBC con `commit` y `rollback`.
+- Actualizar total y stock dentro de la misma transacción.
+- Extraer configuración a variables de entorno.
+- Agregar pruebas de servicios y DAO.
+- Usar `BigDecimal` para importes monetarios.
+
+## 13. Instalación y ejecución
+
+1. Instalar JDK 21 y Maven.
+2. Clonar el repositorio.
+3. Contar con acceso a la base de datos MySQL configurada para el proyecto.
+4. Verificar los datos de conexión en `DatabaseConnection`.
+5. Compilar:
+
+```bash
+mvn clean package
+mvn dependency:copy-dependencies -DoutputDirectory=target/dependency
+```
+
+6. Ejecutar en Windows:
+
+```powershell
+java -cp "target/classes;target/dependency/*" Main
+```
+
+## 14. Conclusión
+
+Food Store cumple el objetivo de integrar POO, arquitectura por capas, JDBC y una base de datos relacional en una aplicación de consola. La división entre menús, servicios, DAO y entidades es clara y reutilizable. Las operaciones CRUD principales están implementadas y el proyecto compila correctamente.
+
+El principal trabajo técnico pendiente se concentra en asegurar la consistencia transaccional de pedidos, total y stock, además de incorporar pruebas automatizadas y configuración externa.
+
+## 15. Bibliografía y enlaces
+
+- Oracle. Java SE 21 Documentation: https://docs.oracle.com/en/java/javase/21/
+- Oracle. JDBC Basics: https://docs.oracle.com/javase/tutorial/jdbc/basics/
+- Apache Software Foundation. Maven Documentation: https://maven.apache.org/guides/
+- Oracle. MySQL Reference Manual: https://dev.mysql.com/doc/
+- Oracle. MySQL Connector/J Developer Guide: https://dev.mysql.com/doc/connector-j/en/
+- Repositorio del proyecto: https://github.com/EzequielMenendez/TPI-Programacion2-Lopez-Moron-Menendez

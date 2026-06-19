@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentación Académica y Técnica — Food Store</title>
+  <style>
+    :root {
+      --blue: #17365d;
+      --blue-2: #24588d;
+      --light: #eaf1f8;
+      --ink: #202833;
+      --muted: #596675;
+      --line: #c8d3df;
+      --ok: #1f6b45;
+      --warn: #8a5a00;
+    }
+
+    * { box-sizing: border-box; }
+
+    @page { size: A4; margin: 0; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #d9dee5;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 10.4pt;
+      line-height: 1.36;
+    }
+
+    .page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 10mm auto;
+      padding: 17mm 18mm 18mm;
+      background: white;
+      page-break-after: always;
+    }
+
+    .page:last-child { page-break-after: auto; }
+
+    .footer {
+      position: absolute;
+      left: 18mm;
+      right: 18mm;
+      bottom: 8mm;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 2.2mm;
+      border-top: 0.3mm solid var(--line);
+      color: var(--muted);
+      font-size: 8.3pt;
+    }
+
+    h1, h2, h3 { color: var(--blue); margin: 0; }
+    h1 { font-size: 23pt; line-height: 1.12; }
+    h2 {
+      margin-bottom: 5mm;
+      padding-bottom: 2.3mm;
+      border-bottom: 0.7mm solid var(--blue-2);
+      font-size: 17pt;
+    }
+    h3 { margin: 4mm 0 1.5mm; font-size: 11.5pt; }
+    p { margin: 0 0 3mm; text-align: justify; }
+    ul, ol { margin: 1.5mm 0 3mm 5mm; padding-left: 5mm; }
+    li { margin-bottom: 1.2mm; }
+    code { font-family: Consolas, monospace; font-size: 9pt; }
+
+    .eyebrow {
+      color: var(--blue-2);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 24mm;
+    }
+
+    .cover-band {
+      width: 35mm;
+      height: 4mm;
+      margin-bottom: 8mm;
+      background: var(--blue-2);
+    }
+
+    .cover h1 { max-width: 155mm; font-size: 30pt; }
+    .cover .subtitle { margin-top: 6mm; color: var(--muted); font-size: 16pt; }
+
+    .cover-data {
+      margin-top: 20mm;
+      padding: 8mm;
+      border-left: 2mm solid var(--blue-2);
+      background: var(--light);
+    }
+
+    .cover-data table { width: 100%; border-collapse: collapse; }
+    .cover-data td { padding: 2mm; vertical-align: top; }
+    .cover-data td:first-child { width: 32mm; color: var(--blue); font-weight: 700; }
+
+    .notice {
+      padding: 3.5mm 4mm;
+      border-left: 1.2mm solid #d38b00;
+      background: #fff6df;
+      color: #664600;
+      font-size: 9.2pt;
+    }
+
+    .toc { width: 100%; border-collapse: collapse; }
+    .toc td { padding: 2.15mm 1mm; border-bottom: 0.2mm dotted #a8b4c1; }
+    .toc td:last-child { width: 15mm; text-align: right; font-weight: 700; color: var(--blue); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+    }
+
+    .card {
+      padding: 4mm;
+      border: 0.3mm solid var(--line);
+      border-radius: 2mm;
+      background: #fbfcfe;
+    }
+
+    .card h3 { margin-top: 0; }
+
+    .callout {
+      margin: 3mm 0;
+      padding: 3.5mm 4mm;
+      border-left: 1.2mm solid var(--blue-2);
+      background: var(--light);
+    }
+
+    .table {
+      width: 100%;
+      margin: 2mm 0 4mm;
+      border-collapse: collapse;
+      font-size: 8.8pt;
+    }
+
+    .table th {
+      padding: 2.2mm;
+      color: white;
+      background: var(--blue);
+      text-align: left;
+    }
+
+    .table td {
+      padding: 2.1mm;
+      border: 0.25mm solid var(--line);
+      vertical-align: top;
+    }
+
+    .table tr:nth-child(even) td { background: #f5f8fb; }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 2mm;
+      margin: 4mm 0 6mm;
+    }
+
+    .flow .node {
+      flex: 1;
+      display: flex;
+      min-height: 24mm;
+      align-items: center;
+      justify-content: center;
+      padding: 2mm;
+      border: 0.4mm solid var(--blue-2);
+      border-radius: 2mm;
+      background: var(--light);
+      color: var(--blue);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .flow .arrow {
+      display: flex;
+      align-items: center;
+      color: var(--blue-2);
+      font-size: 18pt;
+      font-weight: 700;
+    }
+
+    .entity {
+      margin-bottom: 3mm;
+      border: 0.35mm solid var(--line);
+      border-radius: 1.5mm;
+      overflow: hidden;
+    }
+
+    .entity strong {
+      display: block;
+      padding: 2mm 3mm;
+      color: white;
+      background: var(--blue);
+    }
+
+    .entity span {
+      display: block;
+      padding: 2.5mm 3mm;
+      font-family: Consolas, monospace;
+      font-size: 8.6pt;
+    }
+
+    pre {
+      margin: 2mm 0 4mm;
+      padding: 4mm;
+      overflow: hidden;
+      border-radius: 2mm;
+      color: #f1f5f8;
+      background: #16202b;
+      font-family: Consolas, monospace;
+      font-size: 8.6pt;
+      line-height: 1.42;
+      white-space: pre-wrap;
+    }
+
+    .status-ok { color: var(--ok); font-weight: 700; }
+    .status-warn { color: var(--warn); font-weight: 700; }
+
+    .shots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+    }
+
+    .shot {
+      margin: 0;
+      padding: 2.5mm;
+      border: 0.3mm solid var(--line);
+      border-radius: 2mm;
+      background: #f8fafc;
+    }
+
+    .shot.wide { grid-column: 1 / -1; }
+    .shot img { display: block; width: 100%; border-radius: 1mm; }
+    .shot figcaption { margin-top: 2mm; color: var(--muted); font-size: 8.6pt; }
+
+    .refs { font-size: 9pt; }
+    .refs li { margin-bottom: 2.4mm; }
+    a { color: var(--blue-2); overflow-wrap: anywhere; }
+
+    @media print {
+      body { background: white; }
+      .page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="page cover">
+    <div>
+      <div class="cover-band"></div>
+      <div class="eyebrow">Trabajo Práctico Integrador</div>
+      <h1>Documentación Académica y Técnica</h1>
+      <div class="subtitle">Food Store — Sistema de Gestión de Pedidos</div>
+
+      <div class="cover-data">
+        <table>
+          <tr><td>Institución</td><td>Universidad Tecnológica Nacional (UTN) — Facultad Regional Mendoza</td></tr>
+          <tr><td>Carrera</td><td>Tecnicatura Universitaria en Programación</td></tr>
+          <tr><td>Materia</td><td>Programación II</td></tr>
+          <tr><td>Integrantes</td><td>Federico López<br>Nicolás Morón<br>Ezequiel Menéndez</td></tr>
+          <tr><td>Proyecto</td><td>Food Store — Sistema de Gestión de Pedidos</td></tr>
+          <tr><td>Entrega</td><td>18 de junio de 2026</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Food Store — Programación II</span>
+      <span>Página 1 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Índice</h2>
+    <table class="toc">
+      <tr><td>Carátula</td><td>1</td></tr>
+      <tr><td>Índice</td><td>2</td></tr>
+      <tr><td>1. Resumen, objetivos y alcance funcional</td><td>3</td></tr>
+      <tr><td>2. Marco teórico</td><td>4</td></tr>
+      <tr><td>3. Arquitectura y organización del proyecto</td><td>5</td></tr>
+      <tr><td>4. Modelo de dominio</td><td>6</td></tr>
+      <tr><td>5. Persistencia y modelo de datos</td><td>7</td></tr>
+      <tr><td>6. Flujo de ejecución y casos de uso</td><td>8</td></tr>
+      <tr><td>7. Validaciones y manejo de errores</td><td>9</td></tr>
+      <tr><td>8. Decisiones técnicas</td><td>10</td></tr>
+      <tr><td>9. Dificultades y soluciones</td><td>11</td></tr>
+      <tr><td>10. Pruebas, estado y limitaciones</td><td>12</td></tr>
+      <tr><td>11. Capturas del sistema</td><td>13</td></tr>
+      <tr><td>12. Instalación y ejecución</td><td>14</td></tr>
+      <tr><td>13. Conclusión, bibliografía y enlaces</td><td>15</td></tr>
+    </table>
+
+    <div class="callout">
+      El informe se elaboró a partir de la revisión del código fuente, el archivo <code>pom.xml</code>, el esquema SQL y la ejecución local del proyecto.
+    </div>
+
+    <div class="footer">
+      <span>Documentación Académica y Técnica</span>
+      <span>Página 2 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>1. Resumen, objetivos y alcance</h2>
+
+    <h3>Resumen</h3>
+    <p>Food Store es una aplicación de consola desarrollada en Java para administrar la operación básica de un local gastronómico. El sistema gestiona categorías, productos, usuarios y pedidos, y persiste la información en una base de datos relacional MySQL mediante JDBC.</p>
+
+    <h3>Objetivo general</h3>
+    <p>Integrar en un proyecto funcional los contenidos de Programación II: Programación Orientada a Objetos, herencia, interfaces, colecciones, enumeraciones, excepciones, arquitectura por capas, acceso a datos y diseño relacional.</p>
+
+    <h3>Objetivos específicos</h3>
+    <div class="grid-2">
+      <div class="card">
+        <ul>
+          <li>Modelar entidades y relaciones del dominio.</li>
+          <li>Separar presentación, negocio y persistencia.</li>
+          <li>Aplicar validaciones antes de persistir.</li>
+          <li>Utilizar consultas SQL parametrizadas.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <ul>
+          <li>Implementar operaciones CRUD.</li>
+          <li>Calcular el total de cada pedido.</li>
+          <li>Conservar historial mediante baja lógica.</li>
+          <li>Gestionar dependencias con Maven.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Alcance funcional</h3>
+    <table class="table">
+      <tr><th>Módulo</th><th>Operaciones disponibles</th></tr>
+      <tr><td>Categorías</td><td>Listar, crear, editar y eliminar lógicamente.</td></tr>
+      <tr><td>Productos</td><td>Listar, crear, editar y eliminar; asociar a una categoría.</td></tr>
+      <tr><td>Usuarios</td><td>Listar, crear, editar y eliminar; validar correo único.</td></tr>
+      <tr><td>Pedidos</td><td>Listar, crear, agregar detalles, actualizar estado y forma de pago, y eliminar.</td></tr>
+    </table>
+
+    <div class="callout">
+      El sistema es monousuario y se ejecuta por consola. No incluye interfaz gráfica, API web ni autenticación.
+    </div>
+
+    <div class="footer">
+      <span>Resumen y alcance</span>
+      <span>Página 3 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>2. Marco teórico</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Java y POO</h3>
+        <p>Java es un lenguaje orientado a objetos, tipado y multiplataforma. El proyecto aplica encapsulamiento, herencia, interfaces, polimorfismo básico, colecciones y sobrescritura de métodos.</p>
+      </div>
+      <div class="card">
+        <h3>JDBC</h3>
+        <p>JDBC es la API estándar para acceder desde Java a bases relacionales. Se utilizan <code>Connection</code>, <code>PreparedStatement</code>, <code>ResultSet</code> y <code>DriverManager</code>.</p>
+      </div>
+      <div class="card">
+        <h3>MySQL</h3>
+        <p>MySQL almacena información estructurada en tablas relacionadas. Las claves primarias identifican registros y las claves foráneas garantizan relaciones entre entidades.</p>
+      </div>
+      <div class="card">
+        <h3>Maven</h3>
+        <p>Maven configura Java 21, administra MySQL Connector/J y ejecuta las fases de limpieza, compilación, prueba y empaquetado definidas por el ciclo de construcción.</p>
+      </div>
+      <div class="card">
+        <h3>Patrón DAO</h3>
+        <p>El patrón Data Access Object concentra SQL y mapeo relacional. De esta forma, los menús y servicios no dependen directamente de consultas concretas.</p>
+      </div>
+      <div class="card">
+        <h3>Baja lógica</h3>
+        <p>En vez de borrar registros físicamente, se actualiza el atributo <code>eliminado</code>. Esto permite conservar referencias y datos históricos.</p>
+      </div>
+    </div>
+
+    <h3>Conceptos aplicados</h3>
+    <ul>
+      <li><strong>Herencia:</strong> las entidades principales extienden la clase abstracta <code>Base</code>.</li>
+      <li><strong>Interfaz:</strong> <code>Pedido</code> implementa <code>Calculable</code>.</li>
+      <li><strong>Enumeraciones:</strong> valores cerrados para rol, estado y forma de pago.</li>
+      <li><strong>Excepciones:</strong> errores de dominio expresados mediante clases específicas.</li>
+      <li><strong>Try-with-resources:</strong> cierre automático de conexiones, sentencias y resultados.</li>
+    </ul>
+
+    <div class="footer">
+      <span>Marco teórico</span>
+      <span>Página 4 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>3. Arquitectura y organización</h2>
+
+    <div class="flow">
+      <div class="node">Usuario<br>Consola</div>
+      <div class="arrow">›</div>
+      <div class="node">Main<br>Menús</div>
+      <div class="arrow">›</div>
+      <div class="node">Servicios</div>
+      <div class="arrow">›</div>
+      <div class="node">DAO<br>JDBC</div>
+      <div class="arrow">›</div>
+      <div class="node">MySQL</div>
+    </div>
+
+    <table class="table">
+      <tr><th>Capa / paquete</th><th>Responsabilidad</th><th>Componentes</th></tr>
+      <tr><td>Presentación</td><td>Leer opciones y mostrar resultados.</td><td><code>Main</code>, clases <code>Menu*</code></td></tr>
+      <tr><td><code>service</code></td><td>Coordinar casos de uso y aplicar validaciones.</td><td>Cuatro clases <code>*Service</code></td></tr>
+      <tr><td><code>dao</code></td><td>Ejecutar SQL y mapear filas a objetos.</td><td>Clases <code>CRUD*</code></td></tr>
+      <tr><td><code>entities</code></td><td>Representar el modelo y su comportamiento.</td><td>Seis entidades e interfaz</td></tr>
+      <tr><td><code>config</code></td><td>Centralizar y comprobar la conexión.</td><td><code>DatabaseConnection</code>, <code>TestConnection</code></td></tr>
+      <tr><td><code>enums</code></td><td>Restringir valores válidos.</td><td><code>Rol</code>, <code>Estado</code>, <code>FormaPago</code></td></tr>
+      <tr><td><code>exceptions</code></td><td>Representar errores del dominio.</td><td>Tres excepciones personalizadas</td></tr>
+    </table>
+
+    <h3>Flujo de dependencias</h3>
+    <p>Los menús conocen a los servicios; los servicios conocen a los DAO y entidades; los DAO conocen la configuración JDBC y las entidades. La base de datos no es accedida directamente desde la presentación.</p>
+
+    <pre>src/
+├── Main.java y Menu*.java
+├── config/
+├── dao/
+├── entities/
+├── enums/
+├── exceptions/
+└── service/</pre>
+
+    <div class="footer">
+      <span>Arquitectura del sistema</span>
+      <span>Página 5 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>4. Modelo de dominio</h2>
+
+    <div class="grid-2">
+      <div>
+        <div class="entity">
+          <strong>Base (abstracta)</strong>
+          <span>id, eliminado, createdAt<br>equals(), hashCode()</span>
+        </div>
+        <div class="entity">
+          <strong>Categoria</strong>
+          <span>nombre, descripcion</span>
+        </div>
+        <div class="entity">
+          <strong>Producto</strong>
+          <span>nombre, precio, descripcion, stock,<br>imagen, disponible, categoria</span>
+        </div>
+      </div>
+      <div>
+        <div class="entity">
+          <strong>Usuario</strong>
+          <span>nombre, apellido, mail, celular,<br>contrasenia, rol</span>
+        </div>
+        <div class="entity">
+          <strong>Pedido implements Calculable</strong>
+          <span>fecha, estado, total, formaPago,<br>usuario, detalles</span>
+        </div>
+        <div class="entity">
+          <strong>DetallePedido</strong>
+          <span>cantidad, subtotal, producto</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Relaciones</h3>
+    <div class="flow">
+      <div class="node">Categoría<br>1</div>
+      <div class="arrow">⟶</div>
+      <div class="node">N<br>Producto</div>
+      <div class="arrow">·</div>
+      <div class="node">Usuario<br>1</div>
+      <div class="arrow">⟶</div>
+      <div class="node">N<br>Pedido</div>
+    </div>
+    <div class="flow">
+      <div class="node">Pedido<br>1</div>
+      <div class="arrow">⟶</div>
+      <div class="node">N<br>DetallePedido</div>
+      <div class="arrow">⟵</div>
+      <div class="node">1<br>Producto</div>
+    </div>
+
+    <h3>Comportamiento relevante</h3>
+    <ul>
+      <li><code>Pedido.addDetallePedido()</code> crea el detalle y solicita el recálculo.</li>
+      <li><code>Pedido.calcularTotal()</code> suma los subtotales de la colección.</li>
+      <li><code>Base.equals()</code> compara entidades persistidas por clase e identificador.</li>
+      <li>Los métodos <code>toString()</code> generan representaciones para la consola.</li>
+    </ul>
+
+    <div class="footer">
+      <span>Modelo de dominio</span>
+      <span>Página 6 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>5. Persistencia y modelo de datos</h2>
+
+    <p>La aplicación utiliza una base de datos MySQL ya creada y configurada para el proyecto, por lo que no requiere una instalación local en el entorno habitual del equipo. El archivo <code>schema.sql</code> documenta su estructura y permite reproducirla en otro entorno. Todas las tablas incluyen identificador, fecha de creación y marca de baja lógica.</p>
+
+    <table class="table">
+      <tr><th>Tabla</th><th>Datos principales</th><th>Relaciones</th></tr>
+      <tr><td><code>categoria</code></td><td>nombre, descripción</td><td>1:N con producto</td></tr>
+      <tr><td><code>producto</code></td><td>precio, stock, imagen, disponible</td><td>FK a categoría</td></tr>
+      <tr><td><code>usuario</code></td><td>datos personales, mail único, rol</td><td>1:N con pedido</td></tr>
+      <tr><td><code>pedido</code></td><td>fecha, estado, total, forma de pago</td><td>FK a usuario</td></tr>
+      <tr><td><code>detalle_pedido</code></td><td>cantidad y subtotal</td><td>FK a pedido y producto</td></tr>
+    </table>
+
+    <h3>Esquema relacional simplificado</h3>
+    <pre>CATEGORIA (id PK)
+    1 ─────── N PRODUCTO (categoria_id FK)
+
+USUARIO (id PK)
+    1 ─────── N PEDIDO (usuario_id FK)
+                      1
+                      │
+                      N
+              DETALLE_PEDIDO
+                ├── pedido_id FK
+                └── producto_id FK ─── N:1 PRODUCTO</pre>
+
+    <h3>Estrategia JDBC</h3>
+    <ul>
+      <li>Consultas parametrizadas con <code>PreparedStatement</code>.</li>
+      <li>Obtención de identificadores con <code>RETURN_GENERATED_KEYS</code>.</li>
+      <li>Mapeo manual desde <code>ResultSet</code> a entidades.</li>
+      <li>Consultas con <code>JOIN</code> para reconstruir relaciones.</li>
+      <li>Cierre automático mediante <code>try-with-resources</code>.</li>
+    </ul>
+
+    <div class="footer">
+      <span>Persistencia y base de datos</span>
+      <span>Página 7 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>6. Flujo de ejecución y casos de uso</h2>
+
+    <h3>Flujo general</h3>
+    <ol>
+      <li><code>Main</code> crea el <code>Scanner</code> y los cuatro servicios.</li>
+      <li>El usuario selecciona categorías, productos, usuarios o pedidos.</li>
+      <li>La clase de menú solicita y convierte los datos.</li>
+      <li>El servicio valida y coordina la operación.</li>
+      <li>El DAO ejecuta SQL y devuelve objetos o identificadores.</li>
+      <li>El resultado se informa por consola.</li>
+    </ol>
+
+    <h3>Caso de uso: crear producto</h3>
+    <div class="flow">
+      <div class="node">Ingresar datos</div>
+      <div class="arrow">›</div>
+      <div class="node">Elegir categoría</div>
+      <div class="arrow">›</div>
+      <div class="node">Validar precio y stock</div>
+      <div class="arrow">›</div>
+      <div class="node">INSERT producto</div>
+    </div>
+
+    <h3>Caso de uso: crear pedido</h3>
+    <div class="flow">
+      <div class="node">Elegir usuario y pago</div>
+      <div class="arrow">›</div>
+      <div class="node">Crear cabecera</div>
+      <div class="arrow">›</div>
+      <div class="node">Agregar productos</div>
+      <div class="arrow">›</div>
+      <div class="node">Calcular total</div>
+    </div>
+
+    <h3>Operaciones CRUD</h3>
+    <table class="table">
+      <tr><th>Operación</th><th>Implementación</th></tr>
+      <tr><td>Create</td><td><code>INSERT</code> y recuperación de clave generada.</td></tr>
+      <tr><td>Read</td><td><code>SELECT</code> filtrando registros activos.</td></tr>
+      <tr><td>Update</td><td><code>UPDATE</code> por ID y <code>eliminado = FALSE</code>.</td></tr>
+      <tr><td>Delete</td><td><code>UPDATE eliminado = TRUE</code>; no se ejecuta borrado físico.</td></tr>
+    </table>
+
+    <div class="footer">
+      <span>Flujo de ejecución</span>
+      <span>Página 8 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>7. Validaciones y manejo de errores</h2>
+
+    <table class="table">
+      <tr><th>Regla</th><th>Capa</th><th>Respuesta</th></tr>
+      <tr><td>Precio no negativo</td><td>ProductoService</td><td><code>StockInvalidoException</code></td></tr>
+      <tr><td>Stock no negativo</td><td>ProductoService</td><td><code>StockInvalidoException</code></td></tr>
+      <tr><td>Cantidad mayor que cero</td><td>PedidoService</td><td><code>StockInvalidoException</code></td></tr>
+      <tr><td>Stock suficiente</td><td>PedidoService</td><td><code>StockInvalidoException</code></td></tr>
+      <tr><td>Correo obligatorio y único</td><td>UsuarioService</td><td><code>MailDuplicadoException</code> o mensaje</td></tr>
+      <tr><td>Entidad activa existente</td><td>Servicios</td><td><code>EntidadNoEncontradaException</code></td></tr>
+      <tr><td>Entrada numérica válida</td><td>Menús</td><td>Captura de <code>NumberFormatException</code></td></tr>
+    </table>
+
+    <h3>Excepciones personalizadas</h3>
+    <div class="grid-2">
+      <div class="card">
+        <h3>EntidadNoEncontradaException</h3>
+        <p>Indica que un ID no existe o corresponde a un registro eliminado.</p>
+      </div>
+      <div class="card">
+        <h3>MailDuplicadoException</h3>
+        <p>Impide crear o editar un usuario con un correo ya utilizado.</p>
+      </div>
+      <div class="card">
+        <h3>StockInvalidoException</h3>
+        <p>Expresa valores inválidos de precio, stock o cantidad solicitada.</p>
+      </div>
+      <div class="card">
+        <h3>SQLException</h3>
+        <p>Se captura en servicios para informar fallos de persistencia con contexto.</p>
+      </div>
+    </div>
+
+    <h3>Gestión de recursos</h3>
+    <p>Los DAO utilizan <code>try-with-resources</code>, por lo que conexiones, sentencias y resultados se cierran aunque ocurra una excepción. Antes de eliminar, los menús solicitan confirmación explícita.</p>
+
+    <div class="footer">
+      <span>Validaciones y errores</span>
+      <span>Página 9 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>8. Decisiones técnicas</h2>
+
+    <table class="table">
+      <tr><th>Decisión</th><th>Justificación</th><th>Impacto</th></tr>
+      <tr><td>Aplicación de consola</td><td>La consigna se centra en POO y persistencia.</td><td>Interfaz simple y menor complejidad accidental.</td></tr>
+      <tr><td>Arquitectura por capas</td><td>Separa interacción, negocio y SQL.</td><td>Mayor mantenibilidad y responsabilidades claras.</td></tr>
+      <tr><td>Patrón DAO</td><td>Evita consultas SQL en menús y entidades.</td><td>Persistencia localizada y reutilizable.</td></tr>
+      <tr><td>Clase abstracta Base</td><td>Las entidades comparten ID, fecha y baja lógica.</td><td>Reduce duplicación y unifica identidad.</td></tr>
+      <tr><td>Enums</td><td>Roles, estados y pagos poseen valores limitados.</td><td>Evita cadenas inconsistentes en el dominio.</td></tr>
+      <tr><td>Baja lógica</td><td>Se requiere conservar relaciones e historial.</td><td>Los listados filtran <code>eliminado = FALSE</code>.</td></tr>
+      <tr><td>PreparedStatement</td><td>Separa SQL de valores ingresados.</td><td>Mejora seguridad y evita problemas de formato.</td></tr>
+      <tr><td>JDBC sin ORM</td><td>Permite practicar SQL y acceso a datos directo.</td><td>Mapeo explícito, adecuado al tamaño del proyecto.</td></tr>
+      <tr><td>Maven</td><td>Centraliza versión de Java y dependencias.</td><td>Compilación reproducible mediante comandos estándar.</td></tr>
+    </table>
+
+    <div class="callout">
+      La solución evita incorporar frameworks web, ORM o contenedores de inyección porque no aportan valor necesario al alcance académico actual.
+    </div>
+
+    <h3>Consistencia con SOLID</h3>
+    <p>La separación de menús, servicios, entidades y DAO aplica principalmente responsabilidad única. La interfaz <code>Calculable</code> define un contrato pequeño y específico. Para una evolución futura, convendría inyectar los DAO mediante interfaces para reducir el acoplamiento de los servicios.</p>
+
+    <div class="footer">
+      <span>Decisiones técnicas</span>
+      <span>Página 10 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>9. Dificultades y soluciones</h2>
+
+    <div class="card">
+      <h3>Mapeo entre objetos y tablas</h3>
+      <p><strong>Dificultad:</strong> reconstruir productos, usuarios y pedidos junto con sus relaciones. <strong>Solución:</strong> consultas con <code>JOIN</code> y mapeo manual de cada fila a entidades Java.</p>
+    </div>
+    <div class="card">
+      <h3>Recuperación de identificadores</h3>
+      <p><strong>Dificultad:</strong> continuar el flujo después de insertar una entidad. <strong>Solución:</strong> utilizar <code>Statement.RETURN_GENERATED_KEYS</code> y asignar el ID devuelto al objeto.</p>
+    </div>
+    <div class="card">
+      <h3>Conservación del historial</h3>
+      <p><strong>Dificultad:</strong> eliminar registros sin romper relaciones. <strong>Solución:</strong> adoptar baja lógica y filtrar registros activos en búsquedas y listados.</p>
+    </div>
+    <div class="card">
+      <h3>Separación de responsabilidades</h3>
+      <p><strong>Dificultad:</strong> evitar que los menús contengan SQL y reglas de negocio. <strong>Solución:</strong> organizar el proyecto en presentación, servicios, DAO, dominio y configuración.</p>
+    </div>
+    <div class="card">
+      <h3>Consistencia de un pedido</h3>
+      <p><strong>Dificultad:</strong> una compra afecta cabecera, detalles, total y stock. <strong>Estado actual:</strong> las operaciones están separadas. <strong>Mejora necesaria:</strong> agruparlas en una única transacción con <code>commit</code> y <code>rollback</code>.</p>
+    </div>
+
+    <div class="callout">
+      Las dificultades y soluciones fueron redactadas a partir de la estructura implementada y del historial del repositorio, sin atribuir procesos que no pueden verificarse en el código.
+    </div>
+
+    <div class="footer">
+      <span>Dificultades y soluciones</span>
+      <span>Página 11 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>10. Pruebas, estado y limitaciones</h2>
+
+    <h3>Verificación realizada — 18 de junio de 2026</h3>
+    <table class="table">
+      <tr><th>Prueba</th><th>Resultado</th></tr>
+      <tr><td><code>mvn clean package</code></td><td><span class="status-ok">BUILD SUCCESS</span></td></tr>
+      <tr><td>Compilación</td><td>28 archivos fuente; destino Java 21.</td></tr>
+      <tr><td>Empaquetado</td><td>Generado <code>target/mi-proyecto-1.0-SNAPSHOT.jar</code>.</td></tr>
+      <tr><td><code>config.TestConnection</code></td><td><span class="status-ok">Conexión MySQL establecida</span>.</td></tr>
+      <tr><td><code>Main</code> y submenús</td><td><span class="status-ok">Ejecución correcta</span>.</td></tr>
+      <tr><td>Base de datos</td><td><span class="status-ok">Conexión JDBC verificada</span>.</td></tr>
+      <tr><td>Pruebas automatizadas</td><td>No existen fuentes en <code>src/test</code>.</td></tr>
+    </table>
+
+    <h3>Limitaciones verificadas</h3>
+    <ol>
+      <li>Pedido y detalles no se persisten dentro de una transacción común.</li>
+      <li>El total calculado no se actualiza en la tabla <code>pedido</code>.</li>
+      <li>La carga de detalles utiliza el subtotal como precio unitario y puede recalcular mal el total.</li>
+      <li>Se valida el stock, pero no se descuenta al registrar el detalle.</li>
+      <li>Las credenciales están dentro del código fuente.</li>
+      <li>La conexión devuelve <code>null</code> ante fallos y puede provocar errores secundarios.</li>
+    </ol>
+
+    <h3>Mejoras prioritarias</h3>
+    <p>Implementar transacciones JDBC; actualizar total y stock de forma atómica; extraer configuración a variables de entorno; usar <code>BigDecimal</code> para importes; agregar pruebas unitarias y de integración.</p>
+
+    <div class="footer">
+      <span>Pruebas y estado actual</span>
+      <span>Página 12 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>11. Capturas del sistema</h2>
+    <p>Capturas generadas a partir de la ejecución real del proyecto compilado. Se muestran operaciones de navegación que no requieren modificar datos.</p>
+
+    <div class="shots">
+      <figure class="shot wide">
+        <img src="capturas/01_menu_principal.png" alt="Menú principal de Food Store">
+        <figcaption>Figura 1. Menú principal con acceso a las cuatro áreas funcionales.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="capturas/02_menu_productos.png" alt="Menú de productos">
+        <figcaption>Figura 2. Operaciones CRUD disponibles para productos.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="capturas/03_menu_pedidos.png" alt="Menú de pedidos">
+        <figcaption>Figura 3. Creación, consulta, actualización y baja de pedidos.</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout">
+      Las capturas muestran la navegación principal de la aplicación conectada mediante la configuración JDBC del proyecto.
+    </div>
+
+    <div class="footer">
+      <span>Capturas de ejecución</span>
+      <span>Página 13 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>12. Instalación y ejecución</h2>
+
+    <h3>Requisitos</h3>
+    <ul>
+      <li>JDK 21 o superior.</li>
+      <li>Apache Maven 3.9 o superior.</li>
+      <li>Acceso a la base de datos MySQL configurada.</li>
+    </ul>
+
+    <h3>Base de datos</h3>
+    <p>El equipo utiliza una base MySQL ya provisionada. Para ejecutar el sistema se requiere acceso a esa base y una configuración JDBC válida. <code>schema.sql</code> queda disponible como referencia y respaldo de la estructura.</p>
+
+    <h3>Configurar la conexión</h3>
+    <pre>private static final String URL =
+    "jdbc:mysql://localhost:3306/pedidos_db";
+private static final String USER = "TU_USUARIO";
+private static final String PASSWORD = "TU_CONTRASENA";</pre>
+    <p>Las credenciales reales deben mantenerse fuera de commits públicos.</p>
+
+    <h3>Compilar y descargar dependencias</h3>
+    <pre>mvn clean package
+mvn dependency:copy-dependencies -DoutputDirectory=target/dependency</pre>
+
+    <h3>Ejecutar</h3>
+    <pre># Windows
+java -cp "target/classes;target/dependency/*" Main
+
+# Linux / macOS
+java -cp "target/classes:target/dependency/*" Main</pre>
+
+    <p>Para comprobar únicamente la conexión, ejecutar la clase <code>config.TestConnection</code>. Desde IntelliJ IDEA se puede iniciar directamente la clase <code>Main</code>.</p>
+
+    <div class="footer">
+      <span>Instalación y ejecución</span>
+      <span>Página 14 de 15</span>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>13. Conclusión, bibliografía y enlaces</h2>
+
+    <h3>Conclusión</h3>
+    <p>Food Store integra correctamente los conceptos centrales de Programación II en una aplicación de consola persistente. La separación entre menús, servicios, DAO y entidades permite comprender el flujo del sistema y mantener responsabilidades definidas. Las operaciones CRUD principales están implementadas, Maven compila el proyecto y la conexión con MySQL fue verificada.</p>
+    <p>El siguiente paso técnico prioritario es garantizar la consistencia del agregado pedido: cabecera, detalles, total y stock deben actualizarse dentro de una transacción. También resulta necesario agregar pruebas automatizadas y externalizar las credenciales.</p>
+
+    <h3>Bibliografía / Webgrafía</h3>
+    <ol class="refs">
+      <li>Oracle. <em>Java SE 21 Documentation</em>.<br>
+        <a href="https://docs.oracle.com/en/java/javase/21/">https://docs.oracle.com/en/java/javase/21/</a></li>
+      <li>Oracle. <em>JDBC Basics</em>.<br>
+        <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/">https://docs.oracle.com/javase/tutorial/jdbc/basics/</a></li>
+      <li>Apache Software Foundation. <em>Maven Documentation</em>.<br>
+        <a href="https://maven.apache.org/guides/">https://maven.apache.org/guides/</a></li>
+      <li>Oracle. <em>MySQL Reference Manual</em>.<br>
+        <a href="https://dev.mysql.com/doc/">https://dev.mysql.com/doc/</a></li>
+      <li>Oracle. <em>MySQL Connector/J Developer Guide</em>.<br>
+        <a href="https://dev.mysql.com/doc/connector-j/en/">https://dev.mysql.com/doc/connector-j/en/</a></li>
+    </ol>
+
+    <h3>Enlaces de entrega</h3>
+    <p><strong>Repositorio:</strong><br>
+      <a href="https://github.com/EzequielMenendez/TPI-Programacion2-Lopez-Moron-Menendez">github.com/EzequielMenendez/TPI-Programacion2-Lopez-Moron-Menendez</a></p>
+    <div class="footer">
+      <span>Conclusión y referencias</span>
+      <span>Página 15 de 15</span>
+    </div>
+  </section>
+
+</body>
+</html>
